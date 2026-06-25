@@ -1,3 +1,4 @@
+alert("TEST 1");
 let tab = "home";
 let deals = JSON.parse(localStorage.getItem("deals")) || [];
 let editIndex = null;
