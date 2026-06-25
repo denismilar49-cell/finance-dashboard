@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finance Dashboard</title>
+<title>Finance Dashboard Pro</title>
+
 <link rel="stylesheet" href="style.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -13,13 +17,12 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<h2>💰 Dashboard</h2>
+<h2>💰 Finance Pro</h2>
 
-<button onclick="setTab('home')" class="active">🏠 Дім</button>
-<button onclick="setTab('business')">🏢 Бізнес</button>
-<button onclick="setTab('auto')">🚗 Авто</button>
-<button onclick="setTab('items')">📦 Предмети</button>
-<button onclick="setTab('black')">🕶 Чорний ринок</button>
+<button onclick="setTab('home', this)" class="active">🏠 Home</button>
+<button onclick="setTab('business', this)">🏢 Бізнес</button>
+<button onclick="setTab('auto', this)">🚗 Авто</button>
+<button onclick="setTab('items', this)">📦 Предмети</button>
 </div>
 
 <!-- MAIN -->
@@ -27,30 +30,15 @@
 
 <h1>Фінансовий дашборд</h1>
 
-<!-- STATS -->
 <div class="grid">
-<div class="card">
-<h3>Угоди</h3>
-<p id="count">0</p>
+<div class="card">Угоди <p id="count">0</p></div>
+<div class="card green">Прибуток <p id="profit">$0</p></div>
+<div class="card">Середній <p id="avg">$0</p></div>
+<div class="card">Найкраща <p id="best">—</p></div>
 </div>
 
-<div class="card green">
-<h3>Прибуток</h3>
-<p id="profit">$0</p>
-</div>
+<canvas id="chart"></canvas>
 
-<div class="card">
-<h3>Середній</h3>
-<p id="avg">$0</p>
-</div>
-
-<div class="card">
-<h3>Найкраща</h3>
-<p id="best">—</p>
-</div>
-</div>
-
-<!-- FORM -->
 <div class="form">
 <input id="name" placeholder="Назва">
 <input id="buy" type="number" placeholder="Купівля">
@@ -58,7 +46,6 @@
 <button onclick="addDeal()">Додати</button>
 </div>
 
-<!-- LIST -->
 <div id="list"></div>
 
 </div>
