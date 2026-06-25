@@ -1,97 +1,113 @@
-body{
-margin:0;
-font-family:Segoe UI;
-background:#0f1115;
-color:white;
+let tab = "home";
+let deals = JSON.parse(localStorage.getItem("deals")) || [];
+let editIndex = null;
+
+let chart;
+
+function save(){
+localStorage.setItem("deals", JSON.stringify(deals));
 }
 
-.app{
-display:flex;
-min-height:100vh;
+function setTab(t, btn){
+tab = t;
+
+document.querySelectorAll(".sidebar button")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+render();
 }
 
-/* SIDEBAR */
-.sidebar{
-width:240px;
-background:#11151b;
-padding:20px;
-border-right:1px solid #222;
+function addDeal(){
+
+const name = document.getElementById("name").value;
+const buy = +document.getElementById("buy").value;
+const sell = +document.getElementById("sell").value;
+
+if(!name) return;
+
+const obj = {
+name,
+buy,
+sell,
+profit: sell - buy,
+tab
+};
+
+if(editIndex !== null){
+deals[editIndex] = obj;
+editIndex = null;
+}else{
+deals.push(obj);
 }
 
-.sidebar button{
-display:block;
-width:100%;
-margin-bottom:10px;
-padding:10px;
-border-radius:10px;
-background:#1a1d23;
-color:white;
-border:1px solid #2a2f38;
-cursor:pointer;
+save();
+render();
 }
 
-.sidebar button.active{
-background:#00ff88;
-color:black;
+function deleteDeal(i){
+deals.splice(i,1);
+save();
+render();
 }
 
-/* MAIN */
-.main{
-flex:1;
-padding:25px;
+function editDeal(i){
+const d = deals[i];
+document.getElementById("name").value = d.name;
+document.getElementById("buy").value = d.buy;
+document.getElementById("sell").value = d.sell;
+editIndex = i;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:15px;
-margin-bottom:20px;
+function getFiltered(){
+return deals.filter(d=>d.tab===tab);
 }
 
-.card{
-background:#1a1d23;
-padding:20px;
-border-radius:15px;
-border:1px solid #2a2f38;
+function render(){
+
+let list = getFiltered();
+
+let total = deals.reduce((a,b)=>a+b.profit,0);
+let avg = deals.length ? total/deals.length : 0;
+
+let best = deals.reduce((m,d)=>d.profit>m.profit?d:m,{name:"—",profit:-999});
+
+document.getElementById("count").innerText = deals.length;
+document.getElementById("profit").innerText = "$"+total;
+document.getElementById("avg").innerText = "$"+avg.toFixed(2);
+document.getElementById("best").innerText = best.name;
+
+document.getElementById("list").innerHTML =
+list.map((d,i)=>`
+<div class="deal">
+${d.name} | $${d.profit}
+<button onclick="editDeal(${deals.indexOf(d)})">✏️</button>
+<button onclick="deleteDeal(${deals.indexOf(d)})">🗑</button>
+</div>
+`).join("");
+
+updateChart();
 }
 
-.green{ color:#00ff88; }
+function updateChart(){
 
-.form{
-display:grid;
-grid-template-columns:2fr 1fr 1fr auto;
-gap:10px;
-margin-bottom:20px;
+let labels = deals.map((_,i)=>"Deal "+(i+1));
+let data = deals.map(d=>d.profit);
+
+if(chart) chart.destroy();
+
+chart = new Chart(document.getElementById("chart"),{
+type:"line",
+data:{
+labels,
+datasets:[{
+label:"Profit",
+data,
+borderColor:"#00ff88"
+}]
+}
+});
 }
 
-input{
-padding:12px;
-background:#1a1d23;
-border:1px solid #2a2f38;
-color:white;
-border-radius:10px;
-}
-
-button{
-background:#00ff88;
-border:none;
-padding:12px;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-/* DEAL */
-.deal{
-background:#1a1d23;
-border:1px solid #2a2f38;
-padding:15px;
-border-radius:12px;
-margin-bottom:10px;
-}
-
-.actions button{
-margin-right:5px;
-padding:6px 10px;
-font-size:12px;
-}
+render();
