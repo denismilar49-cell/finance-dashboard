@@ -1,102 +1,99 @@
-let tab = "home";
-let deals = [];
-let editIndex = null;
-
-function setTab(t){
-
-tab = t;
-
-document.querySelectorAll(".sidebar button")
-.forEach(b=>b.classList.remove("active"));
-
-event.target.classList.add("active");
-
-render();
+body{
+margin:0;
+font-family:Arial;
+background:#0f1115;
+color:white;
 }
 
-/* ===== ADD / EDIT ===== */
-function addDeal(){
-
-const name = document.getElementById("name").value;
-const buy = +document.getElementById("buy").value;
-const sell = +document.getElementById("sell").value;
-
-if(!name) return;
-
-const profit = sell - buy;
-
-const obj = {name,buy,sell,profit,tab};
-
-if(editIndex !== null){
-deals[editIndex] = obj;
-editIndex = null;
-}else{
-deals.push(obj);
+.app{
+display:flex;
+min-height:100vh;
 }
 
-clear();
-render();
+.sidebar{
+width:220px;
+background:#151922;
+padding:15px;
 }
 
-/* ===== EDIT ===== */
-function editDeal(i){
-const d = deals[i];
-
-name.value = d.name;
-buy.value = d.buy;
-sell.value = d.sell;
-
-editIndex = i;
+.sidebar button{
+width:100%;
+margin:5px 0;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#222838;
+color:white;
+cursor:pointer;
 }
 
-/* ===== DELETE ===== */
-function deleteDeal(i){
-deals.splice(i,1);
-render();
+.sidebar button.active{
+background:#00ff88;
+color:black;
 }
 
-/* ===== CLEAR ===== */
-function clear(){
-name.value = buy.value = sell.value = "";
+.main{
+flex:1;
+padding:20px;
 }
 
-/* ===== FILTER ===== */
-function getFiltered(){
-return deals.filter(d=>d.tab === tab);
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-bottom:20px;
 }
 
-/* ===== RENDER ===== */
-function render(){
+.card{
+background:#1b2130;
+padding:15px;
+border-radius:10px;
+}
 
-const list = getFiltered();
+.green{color:#00ff88;}
 
-/* STATS */
-let total = deals.reduce((s,d)=>s+d.profit,0);
-let avg = deals.length ? total/deals.length : 0;
+.form{
+display:grid;
+grid-template-columns:2fr 1fr 1fr auto;
+gap:10px;
+margin:15px 0;
+}
 
-let best = deals.reduce((m,d)=>d.profit>m.profit?d:m,{profit:-Infinity});
+input{
+padding:10px;
+background:#1b2130;
+border:1px solid #333;
+color:white;
+border-radius:8px;
+}
 
-document.getElementById("count").textContent = deals.length;
-document.getElementById("profit").textContent = "$"+total;
-document.getElementById("avg").textContent = "$"+avg.toFixed(2);
-document.getElementById("best").textContent =
-best.name ? `${best.name} ($${best.profit})` : "—";
+button{
+background:#00ff88;
+border:none;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
 
-/* LIST */
-document.getElementById("list").innerHTML =
-list.map((d,i)=>`
-<div class="deal">
+.deal{
+background:#1b2130;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
+}
 
-<h3>${d.name}</h3>
-<p>${d.buy} → ${d.sell}</p>
-<div class="profit">+$${d.profit}</div>
+@media(max-width:768px){
+.grid{
+grid-template-columns:repeat(2,1fr);
+}
 
-<div class="actions">
-<button onclick="editDeal(${deals.indexOf(d)})">✏️</button>
-<button onclick="deleteDeal(${deals.indexOf(d)})">🗑</button>
-</div>
-
-</div>
+.form{
+grid-template-columns:1fr;
+}
+.sidebar{
+display:none;
+}
+}
 `).join("");
 }
 
