@@ -2,12 +2,16 @@ let tab = "home";
 let deals = JSON.parse(localStorage.getItem("deals")) || [];
 let editIndex = null;
 
-/* SAVE */
+/* =========================
+   SAVE
+========================= */
 function save(){
 localStorage.setItem("deals", JSON.stringify(deals));
 }
 
-/* TAB */
+/* =========================
+   TAB
+========================= */
 function setTab(t, event){
 tab = t;
 
@@ -19,7 +23,9 @@ if(event) event.target.classList.add("active");
 render();
 }
 
-/* ADD */
+/* =========================
+   ADD / EDIT
+========================= */
 function addDeal(){
 
 const name = document.getElementById("name").value;
@@ -44,7 +50,9 @@ clear();
 render();
 }
 
-/* EDIT */
+/* =========================
+   EDIT
+========================= */
 function editDeal(i){
 const d = deals[i];
 
@@ -55,41 +63,52 @@ document.getElementById("sell").value = d.sell;
 editIndex = i;
 }
 
-/* DELETE */
+/* =========================
+   DELETE
+========================= */
 function deleteDeal(i){
 deals.splice(i,1);
 save();
 render();
 }
 
-/* CLEAR */
+/* =========================
+   CLEAR
+========================= */
 function clear(){
 document.getElementById("name").value = "";
 document.getElementById("buy").value = "";
 document.getElementById("sell").value = "";
 }
 
-/* FILTER */
+/* =========================
+   FILTER
+========================= */
 function getFiltered(){
 return deals.filter(d=>d.tab === tab);
 }
 
-/* RENDER */
+/* =========================
+   RENDER
+========================= */
 function render(){
 
 const list = getFiltered();
 
-/* STATS */
-let total = deals.reduce((s,d)=>s+d.profit,0);
-let avg = deals.length ? total/deals.length : 0;
+/* STATS SAFE */
+let total = deals.reduce((s,d)=>s + (d.profit || 0), 0);
+let avg = deals.length ? total / deals.length : 0;
 
-let best = deals.reduce((m,d)=>d.profit>m.profit?d:m,{profit:-Infinity});
+/* BEST SAFE */
+let best = deals.length
+? deals.reduce((m,d)=>d.profit > m.profit ? d : m)
+: null;
 
 document.getElementById("count").textContent = deals.length;
-document.getElementById("profit").textContent = "$"+total;
-document.getElementById("avg").textContent = "$"+avg.toFixed(2);
+document.getElementById("profit").textContent = "$" + total;
+document.getElementById("avg").textContent = "$" + avg.toFixed(2);
 document.getElementById("best").textContent =
-best.name ? `${best.name} ($${best.profit})` : "—";
+best ? `${best.name} ($${best.profit})` : "—";
 
 /* LIST */
 document.getElementById("list").innerHTML =
@@ -109,10 +128,14 @@ list.map((d,i)=>`
 drawChart();
 }
 
-/* CHART */
+/* =========================
+   CHART (FIXED)
+========================= */
 function drawChart(){
 
 const canvas = document.getElementById("chart");
+if(!canvas) return;
+
 const ctx = canvas.getContext("2d");
 
 canvas.width = canvas.offsetWidth;
@@ -122,15 +145,23 @@ ctx.clearRect(0,0,canvas.width,canvas.height);
 
 if(deals.length === 0) return;
 
+let max = Math.max(...deals.map(d=>d.profit));
+let min = Math.min(...deals.map(d=>d.profit));
+let range = max - min || 1;
+
 let step = canvas.width / deals.length;
 
 deals.forEach((d,i)=>{
-let h = d.profit;
-let y = 60 - h;
+
+let h = ((d.profit - min) / range) * 100;
 
 ctx.fillStyle = "#00ff88";
-ctx.fillRect(i*step, y, 10, h);
+ctx.fillRect(i * step, 120 - h, 8, h);
+
 });
 }
 
+/* =========================
+   INIT
+========================= */
 render();
