@@ -11,19 +11,6 @@ min-height:100vh;
 }
 
 /* SIDEBAR */
-body{
-margin:0;
-font-family:Segoe UI;
-background:#0f1115;
-color:white;
-}
-
-.app{
-display:flex;
-min-height:100vh;
-}
-
-/* SIDEBAR */
 .sidebar{
 width:240px;
 background:#11151b;
@@ -40,6 +27,11 @@ background:#1a1d23;
 color:white;
 border:1px solid #2a2f38;
 cursor:pointer;
+transition:0.2s;
+}
+
+.sidebar button:hover{
+transform:scale(1.05);
 }
 
 .sidebar button.active{
@@ -51,6 +43,10 @@ color:black;
 .main{
 flex:1;
 padding:25px;
+}
+
+h1{
+margin-bottom:20px;
 }
 
 .grid{
@@ -67,6 +63,16 @@ border-radius:15px;
 border:1px solid #2a2f38;
 }
 
+/* CHART */
+#chart{
+width:100%;
+height:120px;
+background:#1a1d23;
+border-radius:12px;
+margin-bottom:20px;
+}
+
+/* FORM */
 .form{
 display:grid;
 grid-template-columns:2fr 1fr 1fr auto;
@@ -91,6 +97,7 @@ cursor:pointer;
 font-weight:bold;
 }
 
+/* DEAL */
 .deal{
 background:#1a1d23;
 border:1px solid #2a2f38;
@@ -102,4 +109,31 @@ margin-bottom:10px;
 .profit{
 color:#00ff88;
 font-weight:bold;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px){
+
+.app{
+flex-direction:column;
+}
+
+.sidebar{
+width:100%;
+display:flex;
+overflow:auto;
+gap:10px;
+}
+
+.sidebar button{
+min-width:120px;
+}
+
+.grid{
+grid-template-columns:1fr 1fr;
+}
+
+.form{
+grid-template-columns:1fr;
+}
 }
