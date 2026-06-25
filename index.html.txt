@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>💰 Dashboard</h2>
+
+<button onclick="setTab('home')" class="active">🏠 Дім</button>
+<button onclick="setTab('business')">🏢 Бізнес</button>
+<button onclick="setTab('auto')">🚗 Авто</button>
+<button onclick="setTab('items')">📦 Предмети</button>
+<button onclick="setTab('black')">🕶 Чорний ринок</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>Фінансовий дашборд</h1>
+
+<!-- STATS -->
+<div class="grid">
+<div class="card">
+<h3>Угоди</h3>
+<p id="count">0</p>
+</div>
+
+<div class="card green">
+<h3>Прибуток</h3>
+<p id="profit">$0</p>
+</div>
+
+<div class="card">
+<h3>Середній</h3>
+<p id="avg">$0</p>
+</div>
+
+<div class="card">
+<h3>Найкраща</h3>
+<p id="best">—</p>
+</div>
+</div>
+
+<!-- FORM -->
+<div class="form">
+<input id="name" placeholder="Назва">
+<input id="buy" type="number" placeholder="Купівля">
+<input id="sell" type="number" placeholder="Продаж">
+<button onclick="addDeal()">Додати</button>
+</div>
+
+<!-- LIST -->
+<div id="list"></div>
+
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
